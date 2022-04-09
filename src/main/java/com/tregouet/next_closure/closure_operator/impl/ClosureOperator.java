@@ -1,9 +1,11 @@
-package com.tregouet.next_closure.closure_operator;
+package com.tregouet.next_closure.closure_operator.impl;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.tregouet.next_closure.closure_operator.IClosureOperator;
 
 public class ClosureOperator implements IClosureOperator {
 
@@ -54,7 +56,7 @@ public class ClosureOperator implements IClosureOperator {
 	}
 
 	@Override
-	public Collection<Integer> getClosureOf(Collection<Integer> subSet) {
+	public Set<Integer> getClosureOf(Collection<Integer> subSet) {
 		return attributes2Objects(objects2Attributes(subSet));
 	}
 

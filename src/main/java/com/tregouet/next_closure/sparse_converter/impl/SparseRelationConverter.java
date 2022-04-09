@@ -1,7 +1,6 @@
 package com.tregouet.next_closure.sparse_converter.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +12,7 @@ public class SparseRelationConverter<G, M> implements ISparseRelationConverter<G
 
 	private List<G> objects = new ArrayList<>();
 	private List<M> attributes = new ArrayList<>();
+	private int nbOfAttributes;
 	
 	public SparseRelationConverter() {
 	}
@@ -26,6 +26,7 @@ public class SparseRelationConverter<G, M> implements ISparseRelationConverter<G
 		for (Set<M> attributeSubset : binaryRelation.values())
 			attributeSet.addAll(attributeSubset);
 		attributes.addAll(attributeSet);
+		nbOfAttributes = attributeSet.size();
 		int nbOfObjects = objects.size();
 		int nbOfAttributes = attributes.size();
 		sparseRelation = new boolean[objects.size()][attributes.size()];
@@ -39,19 +40,29 @@ public class SparseRelationConverter<G, M> implements ISparseRelationConverter<G
 	}
 
 	@Override
-	public Map<Set<G>, Set<M>> sparseClosures2Original(Map<List<Integer>, List<Integer>> sparseClosures) {
-		Map<Set<G>, Set<M>> closures = new HashMap<>();
-		for (List<Integer> sparseExtent : sparseClosures.keySet()) {
-			List<Integer> sparseIntent = sparseClosures.get(sparseExtent);
-			Set<G> extent = new HashSet<>();
-			Set<M> intent = new HashSet<>();
-			for (Integer extentIdx : sparseExtent)
-				extent.add(objects.get(extentIdx));
-			for (Integer intentIdx : sparseIntent)
-				intent.add(attributes.get(intentIdx));
-			closures.put(extent, intent);
+	public Set<G> objIdxes2ObjSet(Set<Integer> objIdxes) {
+		Set<G> objSet = new HashSet<>();
+		for (Integer g : objIdxes)
+			objSet.add(objects.get(g));
+		return objSet;
+	}
+
+	@Override
+	public Set<M> attIdxes2AttSet(Set<Integer> attIdxes) {
+		Set<M> attSet = new HashSet<>();
+		for (Integer m : attIdxes)
+			attSet.add(attributes.get(m));
+		return attSet;
+	}
+
+	@Override
+	public Set<M> attVector2AttSet(boolean[] attVector) {
+		Set<M> attSet = new HashSet<>();
+		for (int m = 0 ; m < nbOfAttributes ; m++) {
+			if (attVector[m])
+				attSet.add(attributes.get(m));
 		}
-		return closures;
+		return attSet;
 	}
 
 }

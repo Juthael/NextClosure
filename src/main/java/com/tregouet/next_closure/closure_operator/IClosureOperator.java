@@ -7,7 +7,7 @@ public interface IClosureOperator {
 	
 	IClosureOperator setRelation(boolean[][] binaryRelation);
 	
-	Collection<Integer> getClosureOf(Collection<Integer> subSet);
+	Set<Integer> getClosureOf(Collection<Integer> subSet);
 	
 	boolean[] getClosureOf(boolean[] attributes);
 	
