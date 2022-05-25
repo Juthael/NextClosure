@@ -1,7 +1,5 @@
 package com.tregouet.next_closure.impl;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +25,9 @@ public class NextClosure<G, M> implements IClosedSetsFinder<G, M> {
 	int nbOfAttributes;
 	IClosureOperator closureOperator;
 	LinkedHashMap<Set<G>, Set<M>> lecticallyOrderedClosedSets = new LinkedHashMap<>();
+	
+	public NextClosure() {
+	}
 
 	@Override
 	public LinkedHashMap<Set<G>, Set<M>> apply(Map<G, Set<M>> binaryRelation) {
@@ -44,8 +45,7 @@ public class NextClosure<G, M> implements IClosedSetsFinder<G, M> {
 			if (a[m])
 				a[m] = false;
 			else {
-				a[m] = true;
-				boolean b[] = closureOperator.getClosureOf(a);
+				boolean b[] = closureOperator.getClosureOf(addNewAttribute(a, m));
 				boolean isLecticallyNextClosedSet = noDistinctElementBelowSpecifiedIndex(b, a, m);
 				if (isLecticallyNextClosedSet) {
 					Set<Integer> objIdxes = closureOperator.attributes2Objects(b);
@@ -58,12 +58,10 @@ public class NextClosure<G, M> implements IClosedSetsFinder<G, M> {
 	}
 	
 	private boolean[] firstClosure() {
-		Set<Integer> emptySet = new HashSet<>();
-		Set<Integer> firstClosedSet = closureOperator.getClosureOf(emptySet);
-		boolean[] firstAttVector = new boolean[nbOfAttributes];
-		Arrays.fill(firstAttVector, true);
-		lecticallyOrderedClosedSets.put(converter.objIdxes2ObjSet(firstClosedSet), converter.attVector2AttSet(firstAttVector));
-		return firstAttVector;
+		boolean[] emptyAttSet = new boolean[nbOfAttributes];
+		Set<Integer> firstClosedSet = closureOperator.attributes2Objects(emptyAttSet);
+		lecticallyOrderedClosedSets.put(converter.objIdxes2ObjSet(firstClosedSet), converter.attVector2AttSet(emptyAttSet));
+		return emptyAttSet;
 	}
 	
 	private boolean noDistinctElementBelowSpecifiedIndex(boolean[] b, boolean[] a, int m) {
@@ -72,6 +70,13 @@ public class NextClosure<G, M> implements IClosedSetsFinder<G, M> {
 				return false;
 		}
 		return true;
+	}
+	
+	private boolean[] addNewAttribute (boolean[] attVector, int newAttIdx) {
+		boolean[] newAttVector = new boolean[nbOfAttributes];
+		System.arraycopy(attVector, 0, newAttVector, 0, nbOfAttributes);
+		newAttVector[newAttIdx] = true;
+		return newAttVector;
 	}
 
 }
